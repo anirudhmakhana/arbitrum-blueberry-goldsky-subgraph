@@ -1,0 +1,46 @@
+# The version of the subgraph specification being used
+specVersion: 0.0.4
+
+# A brief description of the subgraph
+description: ERC-20 subgraph with event handlers & entities
+
+# Specifies the file containing the GraphQL schema for the subgraph
+schema:
+  file: ./schema.graphql
+
+# Defines the data sources for the subgraph
+dataSources:
+  - kind: ethereum/contract # Specifies that the data source is an Ethereum smart contract
+    name: erc20 # The name of the data source
+    network: arb-blueberry # The Ethereum network the contract is deployed on
+
+    # Information about the source smart contract
+    source:
+      address: "0x73C3cDd1418c3F17D54A81148387d93122802E72" # The address of the ERC-20 contract
+      abi: erc20 # The ABI (Application Binary Interface) for the contract
+      startBlock: 51217 # The block number to start indexing from
+
+    # Configuration for the mapping
+    mapping:
+      kind: ethereum/events # Specifies that the mapping handles Ethereum events
+      apiVersion: 0.0.7 # The version of The Graph's API being used
+      language: wasm/assemblyscript # The programming language used for the mapping (WebAssembly/AssemblyScript)
+
+      # Entities defined in the subgraph
+      entities:
+        - Token
+        - Account
+        - TokenBalance
+
+      # ABI definitions used in the mapping
+      abis:
+        - name: erc20 # Name of the ABI
+          file: ./abis/erc20.json # File containing the ABI JSON
+
+      # Event handlers for the subgraph
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,uint256) # The event signature to handle
+          handler: handleTransfer # The function in the mapping that handles this event
+
+      # The file containing the mapping implementation
+      file: ./src/mapping.ts

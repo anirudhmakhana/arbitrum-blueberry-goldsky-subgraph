@@ -1,0 +1,39 @@
+# Define the Token entity to store token details
+type Token @entity {
+  # Unique identifier for the token (the token's contract address)
+  id: ID!
+
+  # Name of the token
+  name: String!
+
+  # Symbol of the token
+  symbol: String!
+
+  # Number of decimals the token uses
+  decimals: BigDecimal!
+}
+
+# Define the Account entity to store account details
+type Account @entity {
+  # Unique identifier for the account (the account's address)
+  id: ID!
+
+  # List of TokenBalance entities associated with this account
+  # This is derived from the 'account' field in the TokenBalance entity
+  balances: [TokenBalance!]! @derivedFrom(field: "account")
+}
+
+# Define the TokenBalance entity to store the balance details of tokens for accounts
+type TokenBalance @entity {
+  # Unique identifier for the token balance (combination of token ID and account ID)
+  id: ID!
+
+  # Reference to the Token entity
+  token: Token!
+
+  # Reference to the Account entity
+  account: Account!
+
+  # The amount of the token held by the account
+  amount: BigDecimal!
+}
